@@ -31,6 +31,7 @@ public class BrowserLaunch {
     public static void main(String args[]) {
 
         BrowserLaunch launch = new BrowserLaunch();
+
         System.setProperty("webdriver.chrome.driver", "H:\\selenium\\driverfiles\\chromedriver_win32\\chromedriver.exe");
         launch.driver = new ChromeDriver();
         launch.testInitialize("chrome");
