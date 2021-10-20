@@ -14,13 +14,13 @@ public class BrowserLaunch {
         if (browser.equalsIgnoreCase("chrome")) {
             System.setProperty("webdriver.chrome.driver", "H:\\selenium\\driverfiles\\chromedriver_win32\\chromedriver.exe");
             driver = new ChromeDriver();
-        } else if (browser.equalsIgnoreCase("firefox")) {
+        } /*else if (browser.equalsIgnoreCase("firefox")) {
             System.setProperty("webdriver.gecko.driver", "H:\\selenium\\driverfiles\\geckodriver-v0.30.0-win32\\geckodriver.exe");
             driver = new FirefoxDriver();
         } else if (browser.equalsIgnoreCase("edge")) {
             System.setProperty("webdriver.edge.driver", "H:\\selenium\\driverfiles\\edgedriver_win64\\msedgedriver.exe");
             driver = new EdgeDriver();
-        }
+        }*/
         steps();
     }
 
