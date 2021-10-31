@@ -1,6 +1,7 @@
 package com.obsqura.selenium;
 
 import org.openqa.selenium.By;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -46,7 +47,7 @@ public class BrowserLaunch {
         WebElement loginMenu = driver.findElement(By.className("ico-login"));
         String loginMenuText =loginMenu.getText();
         System.out.println("Login Menu Text : "+loginMenuText);
-        loginMenu.click();
+        loginMenu.click();  
         WebElement userName = driver.findElement(By.id("Email"));
         userName.sendKeys("roniyast");
         userName.clear();
