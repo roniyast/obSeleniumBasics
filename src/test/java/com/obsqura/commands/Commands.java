@@ -37,7 +37,8 @@ public class Commands {
 
     @AfterMethod
     public void tearDown() {
-        driver.close();
+         driver.close();
+        //driver.quit();
     }
 
     @Test(priority = 1, enabled = false)
@@ -120,7 +121,7 @@ public class Commands {
 
     //ToolsQA Alert Examples
 
-    @Test(priority = 7, enabled = true)
+    @Test(priority = 7, enabled = false)
     public void verifySimpleAlert() {
         driver.get("https://demoqa.com/alerts");
         WebElement simpleAlert = driver.findElement(By.id("alertButton"));
@@ -151,13 +152,81 @@ public class Commands {
     @Test(priority = 10, enabled = false)
     public void verifyPromptAlert() throws InterruptedException {
         driver.get("https://demoqa.com/alerts");
+        JavascriptExecutor js = (JavascriptExecutor)driver;
+        js.executeScript("window.scrollBy(0,750)");
         WebElement promptButton = driver.findElement(By.xpath("//button[@id='promtButton']"));
-        //JavascriptExecutor js = (JavascriptExecutor)driver;
-        //js.executeScript("arguments[0].click()", promptButton);
         promptButton.click();
         Alert alert = driver.switchTo().alert();
         alert.sendKeys("Automation");
         alert.accept();
     }
 
+    @Test(priority=11,enabled=false)
+    public void verifySampleFormDemo(){
+        driver.get("https://selenium.obsqurazone.com/simple-form-demo.php");
+        WebElement text1 = driver.findElement(By.id("single-input-field"));
+        String expectedValue = "Hello World";
+        text1.sendKeys(expectedValue);
+        WebElement button1= driver.findElement(By.id("button-one"));
+        button1.click();
+        WebElement text=driver.findElement(By.id("message-one"));
+        String actualValue=text.getText().substring(15);
+        Assert.assertEquals(actualValue,expectedValue,"Texts not matching");
+    }
+    @Test(priority=12,enabled=false)
+    public void verifyMultipleInputDemo(){
+        driver.get("https://selenium.obsqurazone.com/simple-form-demo.php");
+        WebElement valueA = driver.findElement(By.id("value-a"));
+        valueA.sendKeys("10");
+        WebElement valueB = driver.findElement(By.id("value-b"));
+        valueB.sendKeys("20");
+        WebElement button2= driver.findElement(By.id("button-two"));
+        button2.click();
+    }
+
+    @Test(priority = 13, enabled = true)
+    public void verifySimpleCheckboxDemo() {
+        driver.get("https://selenium.obsqurazone.com/check-box-demo.php");
+        WebElement checkBox = driver.findElement(By.id("gridCheck"));
+        checkBox.click();
+        boolean value = checkBox.isSelected();
+        Assert.assertTrue(value, "Checkbox is not selected");
+    }
+
+    @Test(priority = 14 ,enabled = false)
+    public void verifyMultipleCheckboxDemo(){
+        driver.get("https://selenium.obsqurazone.com/check-box-demo.php");
+        WebElement button2 = driver.findElement(By.id("button-two"));
+        button2.click();
+        String valueTrue = driver.findElement(By.id("is_checked")).getAttribute("value");
+        Assert.assertEquals(valueTrue,"true","Not selected");
+        button2.click();
+        String valueFalse = driver.findElement(By.id("is_checked")).getAttribute("value");
+        Assert.assertEquals(valueFalse,"false","Selected");
+    }
+
+    @Test(priority = 15, enabled = false)
+    public void verifyMultipleWindow() {
+        driver.get("http://demo.guru99.com/popup.php");
+        String parentWindow = driver.getWindowHandle();
+        System.out.println("Parent Window Handle id : " + parentWindow);
+        WebElement clickHere = driver.findElement(By.linkText("Click Here"));
+        clickHere.click();
+        Set<String> windows = driver.getWindowHandles();
+        System.out.println(windows);
+
+        Iterator<String> handles = windows.iterator();
+        while (handles.hasNext()) {
+            String childWindow = handles.next();
+            if (!(childWindow.equals(parentWindow))) {
+                driver.switchTo().window(childWindow);
+                WebElement email = driver.findElement(By.name("emailid"));
+                email.sendKeys("roniyast@gmail.com");
+                WebElement submit = driver.findElement(By.name("btnLogin"));
+                submit.click();
+                driver.close();
+            }
+        }
+        driver.switchTo().window(parentWindow);
+    }
 }
