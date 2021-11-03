@@ -4,11 +4,13 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Commands {
@@ -37,7 +39,7 @@ public class Commands {
 
     @AfterMethod
     public void tearDown() {
-         driver.close();
+        // driver.close();
         //driver.quit();
     }
 
@@ -171,20 +173,27 @@ public class Commands {
         button1.click();
         WebElement text=driver.findElement(By.id("message-one"));
         String actualValue=text.getText().substring(15);
+        System.out.println(actualValue);
         Assert.assertEquals(actualValue,expectedValue,"Texts not matching");
     }
+
     @Test(priority=12,enabled=false)
     public void verifyMultipleInputDemo(){
         driver.get("https://selenium.obsqurazone.com/simple-form-demo.php");
+        int a=10,b=20;
+        int expectedMessage=a+b;
         WebElement valueA = driver.findElement(By.id("value-a"));
-        valueA.sendKeys("10");
+        valueA.sendKeys(""+a);
         WebElement valueB = driver.findElement(By.id("value-b"));
-        valueB.sendKeys("20");
+        valueB.sendKeys(""+b);
         WebElement button2= driver.findElement(By.id("button-two"));
         button2.click();
+        String message = driver.findElement(By.id("message-two")).getText().substring(14);
+        int actualMessage =Integer.parseInt(message);
+        Assert.assertEquals(actualMessage,expectedMessage,"Values not matching");
     }
 
-    @Test(priority = 13, enabled = true)
+    @Test(priority = 13, enabled = false)
     public void verifySimpleCheckboxDemo() {
         driver.get("https://selenium.obsqurazone.com/check-box-demo.php");
         WebElement checkBox = driver.findElement(By.id("gridCheck"));
@@ -200,10 +209,7 @@ public class Commands {
         button2.click();
         String valueTrue = driver.findElement(By.id("is_checked")).getAttribute("value");
         Assert.assertEquals(valueTrue,"true","Not selected");
-        button2.click();
-        String valueFalse = driver.findElement(By.id("is_checked")).getAttribute("value");
-        Assert.assertEquals(valueFalse,"false","Selected");
-    }
+        }
 
     @Test(priority = 15, enabled = false)
     public void verifyMultipleWindow() {
@@ -229,4 +235,63 @@ public class Commands {
         }
         driver.switchTo().window(parentWindow);
     }
+    @Test(priority = 16, enabled = false)
+    public void verifyDropDowns() {
+        driver.get("http://demo.guru99.com/test/newtours/register.php");
+        WebElement dropDown = driver.findElement(By.name("country"));
+        Select select = new Select(dropDown);
+        select.selectByVisibleText("INDIA");
+        //select.selectByValue("INDIA");
+        //select.selectByIndex(10);
+    }
+    @Test(priority = 17,enabled = false)
+    public void verifyDropDownValues(){
+        driver.get("https://selenium.obsqurazone.com/select-input.php");
+        List<String> expectedColourValue=new ArrayList<>();
+        expectedColourValue.add("Red");
+        expectedColourValue.add("Yellow");
+        expectedColourValue.add("Green");
+        WebElement colourDropDown=driver.findElement(By.id("single-input-field"));
+        Select select=new Select(colourDropDown);
+        List<WebElement> actualColourWebElements=select.getOptions();
+        List<String> actualColourValue=new ArrayList<String>();
+        for(int i=1;i<actualColourWebElements.size();i++){
+            actualColourValue.add(actualColourWebElements.get(i).getText());
+        }
+        Assert.assertEquals(actualColourValue,expectedColourValue,"drop down value mismatch found in colour list");
+    }
+    @Test(priority=18,enabled=true)
+    public void verifyMultiSelectDropDown() throws InterruptedException {
+        driver.get("https://selenium.obsqurazone.com/select-input.php");
+        List<String> expectedColourValueList=new ArrayList<>();
+        expectedColourValueList.add("Red");
+        expectedColourValueList.add("Yellow");
+        expectedColourValueList.add("Green");
+
+        WebElement multiSelectDropDown = driver.findElement(By.id("multi-select-field"));
+        Select select = new Select(multiSelectDropDown);
+        select.selectByIndex(0);
+       /* String expectedColourValue = expectedColourValueList.get(0).toString();
+        WebElement firstSelectedButton = driver.findElement(By.id("button-first"));
+        firstSelectedButton.click();
+        int size ="First selected color is : ".length();
+        String actualColourValue = driver.findElement(By.id("message-two")).getText().substring(size);
+        Assert.assertEquals(actualColourValue,expectedColourValue,"Values not matching");*/
+
+        select.selectByIndex(1);
+        select.selectByIndex(2);
+        List<WebElement> actualColourValueWebElement = select.getAllSelectedOptions();
+        List<String> actualColourValueList = new ArrayList<>();
+        for(int i=0;i<actualColourValueWebElement.size();i++){
+            actualColourValueList.add(actualColourValueWebElement.get(i).getText());
+        }
+        System.out.println(actualColourValueList);
+        Assert.assertEquals(actualColourValueList,expectedColourValueList,"Values not matching");
+
+        //select.deselectAll();
+        //select.deselectByIndex(0);
+        //select.deselectByValue("Red");
+        //select.deselectByVisibleText("Red");
+    }
+
 }
