@@ -261,7 +261,7 @@ public class Commands {
         Assert.assertEquals(actualColourValue,expectedColourValue,"drop down value mismatch found in colour list");
     }
     @Test(priority=18,enabled=true)
-    public void verifyMultiSelectDropDown() throws InterruptedException {
+    public void verifyMultiSelectDropDown()  {
         driver.get("https://selenium.obsqurazone.com/select-input.php");
         List<String> expectedColourValueList=new ArrayList<>();
         expectedColourValueList.add("Red");
@@ -271,12 +271,9 @@ public class Commands {
         WebElement multiSelectDropDown = driver.findElement(By.id("multi-select-field"));
         Select select = new Select(multiSelectDropDown);
         select.selectByIndex(0);
-       /* String expectedColourValue = expectedColourValueList.get(0).toString();
-        WebElement firstSelectedButton = driver.findElement(By.id("button-first"));
-        firstSelectedButton.click();
-        int size ="First selected color is : ".length();
-        String actualColourValue = driver.findElement(By.id("message-two")).getText().substring(size);
-        Assert.assertEquals(actualColourValue,expectedColourValue,"Values not matching");*/
+       /* String actualFirstSelected = select.getFirstSelectedOption().getText();
+        String expectedColourValue = expectedColourValueList.get(0);
+        Assert.assertEquals(actualFirstSelected,expectedColourValue,"Values not matching");*/
 
         select.selectByIndex(1);
         select.selectByIndex(2);
