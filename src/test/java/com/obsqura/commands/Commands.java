@@ -1,5 +1,6 @@
 package com.obsqura.commands;
 
+import com.obsqura.utility.ExcelUtility;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -10,7 +11,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.lang.reflect.Array;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 public class Commands {
@@ -154,7 +156,7 @@ public class Commands {
     @Test(priority = 10, enabled = false)
     public void verifyPromptAlert() throws InterruptedException {
         driver.get("https://demoqa.com/alerts");
-        JavascriptExecutor js = (JavascriptExecutor)driver;
+        JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollBy(0,750)");
         WebElement promptButton = driver.findElement(By.xpath("//button[@id='promtButton']"));
         promptButton.click();
@@ -163,34 +165,34 @@ public class Commands {
         alert.accept();
     }
 
-    @Test(priority=11,enabled=false)
-    public void verifySampleFormDemo(){
+    @Test(priority = 11, enabled = false)
+    public void verifySampleFormDemo() {
         driver.get("https://selenium.obsqurazone.com/simple-form-demo.php");
         WebElement text1 = driver.findElement(By.id("single-input-field"));
         String expectedValue = "Hello World";
         text1.sendKeys(expectedValue);
-        WebElement button1= driver.findElement(By.id("button-one"));
+        WebElement button1 = driver.findElement(By.id("button-one"));
         button1.click();
-        WebElement text=driver.findElement(By.id("message-one"));
-        String actualValue=text.getText().substring(15);
+        WebElement text = driver.findElement(By.id("message-one"));
+        String actualValue = text.getText().substring(15);
         System.out.println(actualValue);
-        Assert.assertEquals(actualValue,expectedValue,"Texts not matching");
+        Assert.assertEquals(actualValue, expectedValue, "Texts not matching");
     }
 
-    @Test(priority=12,enabled=false)
-    public void verifyMultipleInputDemo(){
+    @Test(priority = 12, enabled = false)
+    public void verifyMultipleInputDemo() {
         driver.get("https://selenium.obsqurazone.com/simple-form-demo.php");
-        int a=10,b=20;
-        int expectedMessage=a+b;
+        int a = 10, b = 20;
+        int expectedMessage = a + b;
         WebElement valueA = driver.findElement(By.id("value-a"));
-        valueA.sendKeys(""+a);
+        valueA.sendKeys("" + a);
         WebElement valueB = driver.findElement(By.id("value-b"));
-        valueB.sendKeys(""+b);
-        WebElement button2= driver.findElement(By.id("button-two"));
+        valueB.sendKeys("" + b);
+        WebElement button2 = driver.findElement(By.id("button-two"));
         button2.click();
         String message = driver.findElement(By.id("message-two")).getText().substring(14);
-        int actualMessage =Integer.parseInt(message);
-        Assert.assertEquals(actualMessage,expectedMessage,"Values not matching");
+        int actualMessage = Integer.parseInt(message);
+        Assert.assertEquals(actualMessage, expectedMessage, "Values not matching");
     }
 
     @Test(priority = 13, enabled = false)
@@ -202,14 +204,14 @@ public class Commands {
         Assert.assertTrue(value, "Checkbox is not selected");
     }
 
-    @Test(priority = 14 ,enabled = false)
-    public void verifyMultipleCheckboxDemo(){
+    @Test(priority = 14, enabled = false)
+    public void verifyMultipleCheckboxDemo() {
         driver.get("https://selenium.obsqurazone.com/check-box-demo.php");
         WebElement button2 = driver.findElement(By.id("button-two"));
         button2.click();
         String valueTrue = driver.findElement(By.id("is_checked")).getAttribute("value");
-        Assert.assertEquals(valueTrue,"true","Not selected");
-        }
+        Assert.assertEquals(valueTrue, "true", "Not selected");
+    }
 
     @Test(priority = 15, enabled = false)
     public void verifyMultipleWindow() {
@@ -235,6 +237,7 @@ public class Commands {
         }
         driver.switchTo().window(parentWindow);
     }
+
     @Test(priority = 16, enabled = false)
     public void verifyDropDowns() {
         driver.get("http://demo.guru99.com/test/newtours/register.php");
@@ -244,26 +247,28 @@ public class Commands {
         //select.selectByValue("INDIA");
         //select.selectByIndex(10);
     }
-    @Test(priority = 17,enabled = false)
-    public void verifyDropDownValues(){
+
+    @Test(priority = 17, enabled = false)
+    public void verifyDropDownValues() {
         driver.get("https://selenium.obsqurazone.com/select-input.php");
-        List<String> expectedColourValue=new ArrayList<>();
+        List<String> expectedColourValue = new ArrayList<>();
         expectedColourValue.add("Red");
         expectedColourValue.add("Yellow");
         expectedColourValue.add("Green");
-        WebElement colourDropDown=driver.findElement(By.id("single-input-field"));
-        Select select=new Select(colourDropDown);
-        List<WebElement> actualColourWebElements=select.getOptions();
-        List<String> actualColourValue=new ArrayList<String>();
-        for(int i=1;i<actualColourWebElements.size();i++){
+        WebElement colourDropDown = driver.findElement(By.id("single-input-field"));
+        Select select = new Select(colourDropDown);
+        List<WebElement> actualColourWebElements = select.getOptions();
+        List<String> actualColourValue = new ArrayList<String>();
+        for (int i = 1; i < actualColourWebElements.size(); i++) {
             actualColourValue.add(actualColourWebElements.get(i).getText());
         }
-        Assert.assertEquals(actualColourValue,expectedColourValue,"drop down value mismatch found in colour list");
+        Assert.assertEquals(actualColourValue, expectedColourValue, "drop down value mismatch found in colour list");
     }
-    @Test(priority=18,enabled=true)
-    public void verifyMultiSelectDropDown()  {
+
+    @Test(priority = 18, enabled = false)
+    public void verifyMultiSelectDropDown() {
         driver.get("https://selenium.obsqurazone.com/select-input.php");
-        List<String> expectedColourValueList=new ArrayList<>();
+        List<String> expectedColourValueList = new ArrayList<>();
         expectedColourValueList.add("Red");
         expectedColourValueList.add("Yellow");
         expectedColourValueList.add("Green");
@@ -279,11 +284,11 @@ public class Commands {
         select.selectByIndex(2);
         List<WebElement> actualColourValueWebElement = select.getAllSelectedOptions();
         List<String> actualColourValueList = new ArrayList<>();
-        for(int i=0;i<actualColourValueWebElement.size();i++){
+        for (int i = 0; i < actualColourValueWebElement.size(); i++) {
             actualColourValueList.add(actualColourValueWebElement.get(i).getText());
         }
         System.out.println(actualColourValueList);
-        Assert.assertEquals(actualColourValueList,expectedColourValueList,"Values not matching");
+        Assert.assertEquals(actualColourValueList, expectedColourValueList, "Values not matching");
 
         //select.deselectAll();
         //select.deselectByIndex(0);
@@ -291,4 +296,71 @@ public class Commands {
         //select.deselectByVisibleText("Red");
     }
 
+    @Test(priority = 19, enabled = false)
+    public void javaScriptExecutor() {
+        driver.get("http://demowebshop.tricentis.com/login");
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(0,750)");
+        js.executeScript("document.getElementById(\'newsletter-subscribe-button\').click()");
+        js.executeScript("document.getElementById('newsletter-email').value='test1@gmail.com'");
+    }
+
+    @Test(priority = 20, enabled = false)
+    public void verifyStaticTable() {
+        driver.get("https://www.w3schools.com/html/html_tables.asp");
+        List<WebElement> tableWebElements = driver.findElements(By.xpath("//table[@id='customers']//tr/td"));
+        List<String> tableCellValues = new ArrayList<>();
+        for (int i = 0; i < tableWebElements.size(); i++) {
+            tableCellValues.add(tableWebElements.get(i).getText());
+            System.out.println(tableCellValues.get(i));
+        }
+    }
+
+    @Test(priority = 21, enabled = false)
+    public void verifyTableRow() {
+        driver.get("https://www.w3schools.com/html/html_tables.asp");
+        List<String> expectedRowValues = new ArrayList<>();
+        expectedRowValues.add("Island Trading");
+        expectedRowValues.add("Helen Bennett");
+        expectedRowValues.add("UK");
+        List<WebElement> rowWebElements = driver.findElements(By.xpath("//table[@id='customers']//tr"));
+        List<String> tableCellValues = new ArrayList<>();
+        for (int i = 0; i < rowWebElements.size(); i++) {
+            List<WebElement> actualRowWebElement = driver.findElements(By.xpath("//table[@id='customers']//tr[" + i + "]/td"));
+            for (int j = 0; j < actualRowWebElement.size(); j++) {
+                tableCellValues.add(actualRowWebElement.get(j).getText());
+            }
+        }
+        System.out.println(tableCellValues);
+        if (tableCellValues.get(9).equals("Island Trading")) {
+            System.out.println("Inside If");
+            //Assert.assertEquals(tableCellValues, expcetedRowValues, "Values not matching");
+        }
+    }
+
+    @Test(priority = 22, enabled = true)
+    public void verifyRegistration() throws IOException {
+
+        ExcelUtility excel = new ExcelUtility();
+        List<String> valuesList = new ArrayList<String>();
+        valuesList = excel.readExcel("TestData.xls", "RegistrationData");
+
+        driver.get("http://demo.guru99.com/test/newtours/register.php");
+        List<WebElement> webElementList = driver.findElements(By.xpath("//td/input"));
+        webElementList.add(8,driver.findElement(By.xpath("//td/select")));
+
+        for (int i = 0; i < webElementList.size()-1; i++) {
+            if (valuesList.get(i).equals("INDIA")) {
+                    if (webElementList.get(i).getTagName().equals("select")) {
+                        Select select = new Select(webElementList.get(i));
+                        select.selectByValue(valuesList.get(i));
+                    }
+            } else if (webElementList.get(i).getTagName().equals("input")) {
+                webElementList.get(i).sendKeys(valuesList.get(i));
+            }
+        }
+        webElementList.get(webElementList.size()-1).click();
+    }
+
 }
+
