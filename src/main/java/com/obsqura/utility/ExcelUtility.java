@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ExcelUtility {
 
-    public List<String> readExcel(String excel , String sheetName) throws IOException {
+    public List<String> readExcel(String excel , String sheetName) throws IOException{
         String path="H:\\Automation Testing\\Assignments\\Demo\\"+excel;
         List<String> list = new ArrayList<String>();
         DataFormatter formatter = new DataFormatter();

@@ -338,7 +338,7 @@ public class Commands {
         }
     }
 
-    @Test(priority = 22, enabled = true)
+    @Test(priority = 22, enabled = false)
     public void verifyRegistration() throws IOException {
 
         ExcelUtility excel = new ExcelUtility();
@@ -347,19 +347,67 @@ public class Commands {
 
         driver.get("http://demo.guru99.com/test/newtours/register.php");
         List<WebElement> webElementList = driver.findElements(By.xpath("//td/input"));
-        webElementList.add(8,driver.findElement(By.xpath("//td/select")));
+        webElementList.add(8, driver.findElement(By.xpath("//td/select")));
 
-        for (int i = 0; i < webElementList.size()-1; i++) {
+        for (int i = 0; i < webElementList.size() - 1; i++) {
             if (valuesList.get(i).equals("INDIA")) {
-                    if (webElementList.get(i).getTagName().equals("select")) {
-                        Select select = new Select(webElementList.get(i));
-                        select.selectByValue(valuesList.get(i));
-                    }
+                if (webElementList.get(i).getTagName().equals("select")) {
+                    Select select = new Select(webElementList.get(i));
+                    select.selectByValue(valuesList.get(i));
+                }
             } else if (webElementList.get(i).getTagName().equals("input")) {
                 webElementList.get(i).sendKeys(valuesList.get(i));
             }
         }
-        webElementList.get(webElementList.size()-1).click();
+        webElementList.get(webElementList.size() - 1).click();
+    }
+
+    @Test(priority = 23, enabled = false)
+    public void verifyDropdownSample() {
+        driver.get("https://artoftesting.com/samplesiteforselenium");
+        WebElement dropdownId = driver.findElement(By.id("testingDropdown"));
+        String valueNeedToBeSelected = "Regression Testing";
+        Select select = new Select(dropdownId);
+        List<WebElement> dropDownListElements = select.getOptions();
+        List<String> dropDownListElementsString = new ArrayList<>();
+        for (int i = 0; i < dropDownListElements.size(); i++) {
+            dropDownListElementsString.add(dropDownListElements.get(i).getText());
+
+        }
+        if (!(dropDownListElementsString.contains(valueNeedToBeSelected))) {
+            System.out.println("The value given is not in the dropdown");
+        }
+
+    }
+
+    @Test(priority =24 , enabled =true)
+    public void verifyList() throws InterruptedException {
+        driver.get("https://buffalocart.com/demo/billing/public/home");
+        WebElement userName = driver.findElement(By.id("username"));
+        userName.sendKeys("admin");
+        WebElement password = driver.findElement(By.id("password"));
+        password.sendKeys("123456");
+        WebElement button = driver.findElement(By.xpath("//button[@type='submit']"));
+        button.click();
+        WebElement endTour = driver.findElement(By.xpath("//button[@class='btn btn-default btn-sm']"));
+        endTour.click();
+        WebElement userManagement = driver.findElement(By.xpath("//span[@class='title']"));
+        userManagement.click();
+        Thread.sleep(500);
+        List<String> expectedValues = new ArrayList<>();
+        expectedValues.add("Users");
+        expectedValues.add("Roles");
+        expectedValues.add("Sales Commission Agents");
+        List<WebElement> actualValuesWebElement = driver.findElements(By.xpath("//ul[@class='treeview-menu menu-open']//span"));
+        System.out.println(actualValuesWebElement);
+
+        List<String> actualValues = new ArrayList<>();
+        for(int i=0;i<actualValuesWebElement.size();i++){
+            actualValues.add(actualValuesWebElement.get(i).getText());
+        }
+        System.out.println(expectedValues);
+        System.out.println(actualValues);
+       Assert.assertEquals(actualValues,expectedValues,"Not Matching");
     }
 
 }
