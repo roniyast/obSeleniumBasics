@@ -1,6 +1,7 @@
 package com.obsqura.commands;
 
 import com.obsqura.utility.ExcelUtility;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -12,6 +13,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -339,7 +341,7 @@ public class Commands {
         }
     }
 
-    @Test(priority = 22, enabled = true)
+    @Test(priority = 22, enabled = false)
     public void verifyRegistration() throws IOException {
 
         ExcelUtility excel = new ExcelUtility();
@@ -381,7 +383,7 @@ public class Commands {
 
     }
 
-    @Test(priority =24 , enabled =false)
+    @Test(priority = 24, enabled = false)
     public void verifyList() throws InterruptedException {
         driver.get("https://buffalocart.com/demo/billing/public/home");
         WebElement userName = driver.findElement(By.id("username"));
@@ -403,16 +405,16 @@ public class Commands {
         System.out.println(actualValuesWebElement);
 
         List<String> actualValues = new ArrayList<>();
-        for(int i=0;i<actualValuesWebElement.size();i++){
+        for (int i = 0; i < actualValuesWebElement.size(); i++) {
             actualValues.add(actualValuesWebElement.get(i).getText());
         }
         System.out.println(expectedValues);
         System.out.println(actualValues);
-       Assert.assertEquals(actualValues,expectedValues,"Not Matching");
+        Assert.assertEquals(actualValues, expectedValues, "Not Matching");
     }
 
-    @Test(priority=25,enabled=false)
-    public void verifyDoubleClick(){
+    @Test(priority = 25, enabled = false)
+    public void verifyDoubleClick() {
         driver.get("http://demo.guru99.com/test/simple_context_menu.html");
         WebElement doubleClickButton = driver.findElement(By.xpath("//button"));
         Actions action = new Actions(driver);
@@ -422,13 +424,72 @@ public class Commands {
         alert.accept();
     }
 
-    @Test(priority=26,enabled=false)
-    public void verifyRightClick(){
+    @Test(priority = 26, enabled = false)
+    public void verifyRightClick() {
         driver.get("http://demo.guru99.com/test/simple_context_menu.html");
         WebElement rightClickButton = driver.findElement(By.xpath("//span[@class='context-menu-one btn btn-neutral']"));
         Actions action = new Actions(driver);
         action.contextClick(rightClickButton).build().perform();
 
     }
+
+    @Test(priority = 27, enabled = false)
+    public void verifyMouseOver() {
+        driver.get("https://demoqa.com/menu/");
+        WebElement mainItem2Link = driver.findElement(By.linkText("Main Item 2"));
+        Actions action = new Actions(driver);
+        //action.moveToElement(mainItem2Link).build().perform();
+        //action.moveToElement(mainItem2Link,50,50).build().perform();
+        action.moveByOffset(100, 100).build().perform();
+
+    }
+
+    @Test(priority = 28, enabled = false)
+    public void verifyDragAndDrop() {
+        driver.get("https://demoqa.com/droppable");
+        WebElement dragElement = driver.findElement(By.id("draggable"));
+        WebElement dropElement = driver.findElement(By.id("droppable"));
+        Actions action = new Actions(driver);
+        action.dragAndDrop(dragElement, dropElement).build().perform();
+
+    }
+
+    @Test(priority = 29, enabled = false)
+    public void verifyDragAndDropByOffset() {
+        driver.get("https://demoqa.com/dragabble");
+        WebElement dragElement = driver.findElement(By.id("dragBox"));
+        int xOffset1 = dragElement.getLocation().getX();
+        int yOffset1 = dragElement.getLocation().getY();
+        System.out.println("x :"+xOffset1+" Y :"+yOffset1);
+        int x = xOffset1+20;
+        int y = yOffset1+20;
+        Actions action = new Actions(driver);
+        action.dragAndDropBy(dragElement,x,y).build().perform();
+    }
+
+    @Test(priority=30,enabled=false)
+    public void verifyClickAndHold(){
+        driver.get("https://demoqa.com/resizable");
+        WebElement resizableElement = driver.findElement(By.xpath("//div[@id='resizable']/span"));
+        Actions action = new Actions(driver);
+        action.clickAndHold(resizableElement).dragAndDropBy(resizableElement,500,500).build().perform();
+    }
+    @Test(priority=31,enabled = false)
+    public void takeScreenShot() throws IOException {
+        driver.get("http://demowebshop.tricentis.com/");
+        TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+        File screenshot = takesScreenshot.getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(screenshot,new File("./Screenshots/"+"test.png"));
+    }
+    @Test(priority = 32, enabled=true)
+    public void clickAndHoldExample(){
+        driver.get("https://selenium08.blogspot.com/2020/01/click-and-hold.html");
+        //List<WebElement> alphabetsWebElement = driver.findElements(By.xpath("//ul[@id='sortable']/li"));
+        WebElement A = driver.findElement(By.xpath("//ul[@id='sortable']/li[@name='C']"));
+        WebElement B = driver.findElement(By.xpath("//ul[@id='sortable']/li[@name='F']"));
+        Actions action = new Actions(driver);
+        action.clickAndHold(B).dragAndDrop(A,B).build().perform();
+    }
+
 }
 
