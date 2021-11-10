@@ -5,6 +5,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -338,12 +339,12 @@ public class Commands {
         }
     }
 
-    @Test(priority = 22, enabled = false)
+    @Test(priority = 22, enabled = true)
     public void verifyRegistration() throws IOException {
 
         ExcelUtility excel = new ExcelUtility();
         List<String> valuesList = new ArrayList<String>();
-        valuesList = excel.readExcel("TestData.xls", "RegistrationData");
+        valuesList = excel.readExcel("src/main/resources/TestData.xls", "RegistrationData");
 
         driver.get("http://demo.guru99.com/test/newtours/register.php");
         List<WebElement> webElementList = driver.findElements(By.xpath("//td/input"));
@@ -380,7 +381,7 @@ public class Commands {
 
     }
 
-    @Test(priority =24 , enabled =true)
+    @Test(priority =24 , enabled =false)
     public void verifyList() throws InterruptedException {
         driver.get("https://buffalocart.com/demo/billing/public/home");
         WebElement userName = driver.findElement(By.id("username"));
@@ -410,5 +411,24 @@ public class Commands {
        Assert.assertEquals(actualValues,expectedValues,"Not Matching");
     }
 
+    @Test(priority=25,enabled=false)
+    public void verifyDoubleClick(){
+        driver.get("http://demo.guru99.com/test/simple_context_menu.html");
+        WebElement doubleClickButton = driver.findElement(By.xpath("//button"));
+        Actions action = new Actions(driver);
+        action.doubleClick(doubleClickButton).build().perform();
+
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
+    }
+
+    @Test(priority=26,enabled=false)
+    public void verifyRightClick(){
+        driver.get("http://demo.guru99.com/test/simple_context_menu.html");
+        WebElement rightClickButton = driver.findElement(By.xpath("//span[@class='context-menu-one btn btn-neutral']"));
+        Actions action = new Actions(driver);
+        action.contextClick(rightClickButton).build().perform();
+
+    }
 }
 
