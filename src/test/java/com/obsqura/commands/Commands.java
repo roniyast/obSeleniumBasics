@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -55,9 +56,10 @@ public class Commands {
 
             TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
             File screenshot = takesScreenshot.getScreenshotAs(OutputType.FILE);
-            Date d = new Date();
-            String FileName = result.getName()+d.getDate()+"-"+d.getMonth()+"-"+d.getYear()+ ".png";
-            FileUtils.copyFile(screenshot,new File("./Screenshots/"+FileName));
+            Date date = new Date();
+            String dateFormatted = new SimpleDateFormat("dd-MM-yyyy").format(date);
+            String FileName = result.getName()+"_"+dateFormatted;
+            FileUtils.copyFile(screenshot,new File("./Screenshots/"+FileName+".png"));
         }
         // driver.close();
         //driver.quit();
