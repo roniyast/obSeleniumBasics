@@ -7,8 +7,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -16,12 +19,14 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Commands {
 
     WebDriver driver;
-
+    @Deprecated
     public void testInitialize(String browser) {
         if (browser.equalsIgnoreCase("chrome")) {
             System.setProperty("webdriver.chrome.driver", "H:\\selenium\\driverfiles\\chromedriver_win32\\chromedriver.exe");
@@ -35,17 +40,28 @@ public class Commands {
         }
         driver.manage().deleteAllCookies();
         driver.manage().window().maximize();
+        driver.manage().timeouts().pageLoadTimeout(10,TimeUnit.SECONDS);
     }
 
     @BeforeMethod
     public void setup() {
         testInitialize("chrome");
+
     }
 
     @AfterMethod
-    public void tearDown() {
+    public void tearDown(ITestResult result) throws IOException {
+        if(ITestResult.FAILURE == result.getStatus()){
+
+            TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+            File screenshot = takesScreenshot.getScreenshotAs(OutputType.FILE);
+            Date d = new Date();
+            String FileName = result.getName()+d.getDate()+"-"+d.getMonth()+"-"+d.getYear()+ ".png";
+            FileUtils.copyFile(screenshot,new File("./Screenshots/"+FileName));
+        }
         // driver.close();
         //driver.quit();
+
     }
 
     @Test(priority = 1, enabled = false)
@@ -481,15 +497,33 @@ public class Commands {
         File screenshot = takesScreenshot.getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(screenshot,new File("./Screenshots/"+"test.png"));
     }
-    @Test(priority = 32, enabled=true)
+    @Test(priority = 32, enabled=false)
     public void clickAndHoldExample(){
         driver.get("https://selenium08.blogspot.com/2020/01/click-and-hold.html");
         //List<WebElement> alphabetsWebElement = driver.findElements(By.xpath("//ul[@id='sortable']/li"));
-        WebElement A = driver.findElement(By.xpath("//ul[@id='sortable']/li[@name='C']"));
-        WebElement B = driver.findElement(By.xpath("//ul[@id='sortable']/li[@name='F']"));
+        WebElement C = driver.findElement(By.xpath("//ul[@id='sortable']/li[@name='C']"));
+        WebElement F = driver.findElement(By.xpath("//ul[@id='sortable']/li[@name='F']"));
         Actions action = new Actions(driver);
-        action.clickAndHold(B).dragAndDrop(A,B).build().perform();
+        action.clickAndHold(C).dragAndDrop(C,F).build().perform();
     }
 
+    @Test(priority = 33 , enabled = true)
+    public void verifyScreenshot(){
+        driver.get("https://www.google.co.in/");
+        String actualTitle = driver.getTitle();
+        String expectedTitle = "www.google.com";
+        Assert.assertEquals(actualTitle,expectedTitle,"Not matching");
+    }
+
+    @Test (priority=34, enabled = false)
+    @Deprecated
+    public void verifyWaitsInSelenium(){
+        driver.get("http://demo.guru99.com/test/newtours/");
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        WebElement submitButton= driver.findElement(By.xpath("//input[@name='submit']"));
+        WebDriverWait wait = new WebDriverWait(driver,10);
+        wait.until(ExpectedConditions.visibilityOf(submitButton));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='submit']")));
+    }
 }
 
